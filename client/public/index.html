@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>StackOverFlowLite | home</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="initial-scale=1, maximum-scale=1">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+<link rel ="stylesheet" type = "text/css" href = "./styles/index.css">
+<link rel ="stylesheet" type = "text/css" href = "./styles/nav.css">
+</head>
+<body>
+<div class="nav" id ="navbar">
+  <div class="nav-header">
+    <div class="nav-title">
+      FMS ATBU
+    </div>
+  </div>
+  <div class="nav-btn">
+    <label for="nav-check">
+      <span></span>
+      <span></span>
+      <span></span>
+    </label>
+  </div>
+  <input type="checkbox" id="nav-check">
+  <div class="nav-links" >
+    <a href= "/#" id= "homeLink">Home</a>
+    <a href="/#ask" id = "askLink">AskQuestion</a>
+    <a href="/#profile" id = "profileLink" >My Profile</a>
+    
+    <div class = "search-bar"><input id= "searchBox" type ="search"/> <button id="searchButton">Search</button></div>
+    
+    <a href="/#signup" id = "signupLink">signup</a>
+    <a href="/#login" id = "loginLink">login</a>
+    <a href="/#logout" id = "logoutLink" >Logout</a>
+    </div>
+</div>
+<div id="notificationDisplay" class ="notification"></div>
+<div id="pageDisplay"></div>
+<div id="modalDisplay"></div>   
+
+<div class = "container footer" id="footer">
+   &copy 2018 FMS ATBU
+
+</div>
+<script type ="module" src ="./js/src/models/dataCenter.js"></script>
+<script type="module" src="./js/src/views/login.js"></script>
+<script type="module" src="./js/src/views/ask.js"></script>
+<script type="module" src="./js/src/views/home.js"></script>
+<script type="module" src="./js/src/views/signup.js"></script>
+<script type="module" src="./js/src/views/profile.js"></script>
+<script type="module" src="./js/src/views/questions.js"></script>
+<script type="module" src="./js/src/views/RenderUi.js"></script>
+<script type ="module" src= "./js/src/router/routeTable.js"></script>
+<script type= "module" src="./js/src/router/index.js"></script>
+<script type= "module" src="./js/src/views/nav.js"></script>
+<script type="module" src="./js/src/controllers/apiControllers/QuestionApiController.js"></script>
+<script type="module" src="./js/src/controllers/viewControllers/QuestionViewController.js"></script>
+<script type="module" src="./js/src/controllers/viewControllers/index.js"></script>
+<script type= "module" src="./js/src/views/index.js"></script>
+</body>
+
+
+</html>

@@ -1,0 +1,55 @@
+{
+  "name": "StackOverFlow-Lite",
+  "version": "1.0.0",
+  "engines": {
+    "node": "8.10.0"
+  },
+  "description": "StackOverFlow-Lite Application is a platform where users can ask questions and get answers to their questions",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm run db:initialize --exit --exit --exit && cross-env NODE_ENV=test nyc --require babel-register --require babel-polyfill mocha --timeout 10000000 server/tests/**/*.js --exit",
+    "start": "babel-node server/app.js",
+    "heroku-postbuild": "babel-node server/migrations/index.js --exit",
+    "db:initialize": "cross-env NODE_ENV=development babel-node server/migrations/index.js --exit",
+    "coverage": "nyc report --reporter=text-lcov | coveralls",
+    "coveralls": "npm run db:initialize --exit && cross-env NODE_ENV=test nyc --reporter=lcov --reporter=text --require babel-register --require babel-polyfill mocha server/tests/**/*.js --exit "
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/augustineezinwa/StackOverFlow-Lite.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/augustineezinwa/StackOverFlow-Lite/issues"
+  },
+  "homepage": "https://github.com/augustineezinwa/StackOverFlow-Lite#readme",
+  "dependencies": {
+    "babel-plugin-istanbul": "^5.0.1",
+    "babel-preset-env": "^1.7.0",
+    "bcrypt": "^3.0.0",
+    "body-parser": "^1.18.3",
+    "chai": "^4.1.2",
+    "chai-http": "^4.0.0",
+    "cors": "^2.8.4",
+    "coveralls": "^3.0.2",
+    "cross-env": "^5.2.0",
+    "dotenv": "^6.0.0",
+    "express": "^4.16.3",
+    "jsonwebtoken": "^8.3.0",
+    "mocha": "^5.2.0",
+    "morgan": "^1.9.0",
+    "nyc": "^12.0.2",
+    "pg": "^7.4.3",
+    "swagger-ui-express": "^4.0.0",
+    "yamljs": "^0.3.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "eslint": "^5.3.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.14.0"
+  }
+}

@@ -1,0 +1,593 @@
+swagger: '2.0'
+info:
+  description: API docs for StackOverFlow-Lite.
+  version: 1.0.0
+  title: StackOverFlow-Lite Web App API
+  termsOfService: 'http://swagger.io/terms/'
+  contact:
+    email: augustineezinwa@gmail.com
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+host: stack-o-lite.herokuapp.com
+basePath: /api/v1
+tags:
+  - name: Users
+    description: API for user
+  - name: Questions
+    description: API for questions
+  - name: Answers
+    description: API for answers
+schemes:
+  - https
+  - http
+paths:
+  /auth/signup:
+    post:
+      tags:
+        - Users
+      summary: Add a new user
+      description: Registers a new user into StackOverFlow-lite
+      operationId: addUser
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: user
+          description: A new user to register
+          required: true
+          schema:
+            $ref: '#/definitions/UserSignUp'
+      responses:
+        '201':
+          description: You signed up successfully
+        '409':
+          description: email is already in use.
+        '422':
+          description: Errors! Invalid parameters.
+  /auth/login:
+    post:
+      tags:
+        - Users
+      summary: Login User
+      description: Logins a registered user into StackOverFlow-Lite
+      operationId: loginUser
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: user
+          description: Logins a registered user
+          required: true
+          schema:
+            $ref: '#/definitions/UserLogin'
+      responses:
+        '200':
+          description: you are logged in.
+        '401':
+          description: password is incorrect.
+        '404':
+          description: email doesnt exist on the system. Login or signup
+  /questions:
+    post:
+      tags:
+        - Questions
+      summary: posts a question
+      description: Creates a question in StackOverFlow-Lite
+      operationId: createNewQuestion
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: question
+          description: Creates a new question in StackOverFlow-Lite
+          required: true
+          schema:
+            $ref: '#/definitions/PostQuestionModel'
+        - in: query
+          name: token
+          description: you need a token to create this question
+          required: true
+          type: string
+      responses:
+        '201':
+          description: you have successfully posted this question
+        '400':
+          description: 'Validation Errors!: Invalid input fields'
+        '401':
+          description: Unauthorized! Invalid token
+        '403':
+          description: 'No token!, Action forbidden! please sign up or login'
+    get:
+      tags:
+        - Questions
+      summary: gets all questions in Stack-OverFlow-Lite
+      description: This can only be done by any one visiting the application
+      operationId: getAllQuestions
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: success!
+        '404':
+          description: No questions found!
+  '/questions/{questionId}':
+    get:
+      tags:
+        - Questions
+      summary: Gets a questions by id
+      description: This gets a particular question with all its answers
+      operationId: getAQuestionById
+      produces:
+        - application/json
+      parameters:
+        - name: questionId
+          in: path
+          description: Id to fetch the question
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: success!
+          schema:
+            $ref: '#/definitions/QuestionFoundModel'
+        '404':
+          description: No question were found!
+    delete:
+      tags:
+        - Questions
+      summary: Delete a question by its id
+      description: This can only be done by the logged in user.
+      operationId: deleteQuestionById
+      produces:
+        - application/json
+      parameters:
+        - name: questionId
+          in: path
+          description: The id of the question that needs to be deleted.
+          required: true
+          type: integer
+        - name: token
+          in: query
+          description: you need a token to delete this question.
+          required: true
+          type: string
+      responses:
+        '200':
+          description: You have successfully deleted this question.
+        '401':
+          description: 'Unauthorized, please provide a valid token'
+        '404':
+          description: This question does not exist.
+  /users/questions:
+    get:
+      tags:
+        - Questions
+      summary: This gets a question for a user in StackOverFlow-Lite
+      description: This gets a question for a user on Stack-Overflow-Lite
+      operationId: getAUserQuestion
+      produces:
+        - application/json
+      parameters:
+        - name: token
+          in: query
+          description: you need a token to get these questions
+          required: true
+          type: string
+      responses:
+        '200':
+          description: success
+          schema:
+            $ref: '#/definitions/SearchQuestionModel'
+        '404':
+          description: No questions were found!
+  /questions/:
+    get:
+      tags:
+        - Questions
+      summary: This searches for any question on Stack-Over-Flow-lite
+      description: This searches for questions on Stack-Overflow-Lite
+      operationId: SearchQuestion
+      produces:
+        - application/json
+      parameters:
+        - name: search
+          in: query
+          description: Enter in the keywords to search
+          required: true
+          type: string
+      responses:
+        '200':
+          description: success
+          schema:
+            $ref: '#/definitions/AllQuestionFoundModel'
+        '404':
+          description: No questions were found!
+  /questions/mostanswers:
+    get:
+      tags:
+        - Questions
+      summary: This displays questions with most answers
+      description: This displays questions with most answers
+      operationId: displayQuestionWithMostAnswers
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: success
+          schema:
+            $ref: '#/definitions/SearchQuestionModel'
+        '404':
+          description: No questions were found!
+  '/questions/{questionId}/answers':
+    post:
+      tags:
+        - Answers
+      summary: This posts an answer to a question in StackOverFlow-Lite Application
+      description: This route is available only to a logged in user
+      operationId: postAnswer
+      produces:
+        - application/json
+      parameters:
+        - name: questionId
+          in: path
+          description: >-
+            The id of the particular question that you want to post an answer
+            to.
+          required: true
+          type: integer
+        - name: token
+          in: query
+          description: you need a token to post this question
+          required: true
+          type: string
+        - in: body
+          name: Answer
+          description: Enters an answer to a question
+          required: true
+          schema:
+            $ref: '#/definitions/PostAnswerModel'
+      responses:
+        '200':
+          description: success.
+          schema:
+            $ref: '#/definitions/PostAnswerModel'
+        '400':
+          description: Question validation errors!
+        '401':
+          description: Unauthorized! please provide a valid token
+        '403':
+          description: Access denied! please sign up or login
+  '/questions/{questionId}/answers/{answerId}':
+    put:
+      tags:
+        - Answers
+      summary: Updates or prefer an answer on StackOverFlow-Lite
+      description: >-
+        This route is available only to the owner of the answer, or the owner of
+        the question,.
+      operationId: updatePreferAnswer
+      produces:
+        - application/json
+      parameters:
+        - name: questionId
+          in: path
+          description: The id of the particular question that bears the answer
+          required: true
+          type: integer
+        - name: answerId
+          in: path
+          description: >-
+            The id of the particular answer that needs to be updated or
+            preffered.
+          required: true
+          type: integer
+        - name: token
+          in: query
+          description: you need a token to prefer or update an answer.
+          required: true
+          type: string
+        - name: Answer
+          in: body
+          description: Updates an answer
+          required: true
+          schema:
+            $ref: '#/definitions/PostAnswerModel'
+      responses:
+        '200':
+          description: success. you have successfully preffered or updated this answer.
+        '400':
+          description: invalid url
+        '401':
+          description: 'Unauthorized!, please provide a valid token.'
+        '403':
+          description: >-
+            Action forbidden! you cannot edit this answer/  Action forbidden!
+            you do not have access to this answer
+        '404':
+          description: >-
+            This answer does not exist for this question/ This question does not
+            exist
+    get:
+      tags:
+        - Answers
+      summary: This gets a particular answer with all its comments
+      description: This route is available to everyone.
+      operationId: getAnAnswer
+      produces:
+        - application/json
+      parameters:
+        - name: questionId
+          in: path
+          description: The id of the question that bears the answer
+          required: true
+          type: integer
+        - name: answerId
+          in: path
+          description: The id of the answer that you need to fetch
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: success
+          schema:
+            $ref: '#/definitions/AnswerFoundModel'
+        '404':
+          description: answer not found!
+    
+  '/questions/{questionId}/answers/{answerId}/upvote':
+    put:
+      tags:
+        - Answers
+      summary: Upvotes an answer
+      description: This route is available to every one in the application
+      operationId: voteAnswer
+      produces:
+        - application/json
+      parameters:
+        - name: questionId
+          in: path
+          description: The id of the particular question that bears the answer
+          required: true
+          type: integer
+        - name: answerId
+          in: path
+          description: The id of the particular answer that needs to be upvoted
+          required: true
+          type: integer
+        - name: token
+          in: query
+          description: you need a token to upvote an answer.
+          required: true
+          type: string
+      responses:
+        '200':
+          description: success. you have successfully upvoted this answer.
+        '400':
+          description: invalid url
+        '401':
+          description: 'Unauthorized!, please provide a valid token. '
+        '403':
+          description: >-
+            Action forbidden! you cannot edit this answer Action forbidden! you
+            do not have access to this answer
+        '404':
+          description: >-
+            This answer does not exist for this question /This question does not
+            exist.
+  '/questions/{questionId}/answers/{answerId}/downvote':
+    put:
+      tags:
+        - Answers
+      summary: Downvotes an answer
+      description: This route is available to everyone
+      operationId: downvote answer
+      produces:
+        - application/json
+      parameters:
+        - name: questionId
+          in: path
+          description: The id of the particular question that bears the answer
+          required: true
+          type: integer
+        - name: answerId
+          in: path
+          description: The id of the particular answer that needs to be downvoted
+          required: true
+          type: integer
+        - name: token
+          in: query
+          description: you need a token to downvote this answer
+          required: true
+          type: string
+      responses:
+        '200':
+          description: success. you have successfully downvoted this answer
+        '400':
+          description: invalid url
+        '401':
+          description: 'Unauthorized!, please provide a valid token.'
+        '403':
+          description: >-
+            Action forbidden! you cannot edit this answer, Action forbidden! you
+            do not have access to this answer
+        '404':
+          description: >-
+            This answer does not exist for this question ,This question does not
+            exist.
+  '/questions/{questionId}/answers/{answerId}/comments':
+    post:
+      tags:
+        - Answers
+      summary: comments an answer
+      description: This route is available to everyone
+      operationId: commentAnswer
+      produces:
+        - application/json
+      parameters:
+        - name: questionId
+          in: path
+          description: The id of the particular question that bears the answer
+          required: true
+          type: integer
+        - name: answerId
+          in: path
+          description: The id of the particular answer that you need
+          required: true
+          type: integer
+        - name: token
+          in: query
+          description: you need a token to comment this answer
+          required: true
+          type: string
+        - in: body
+          name: addComment
+          description: comment this answer
+          required: true
+          schema:
+            $ref: '#/definitions/PostCommentModel'
+      responses:
+        '200':
+          description: success. you have successfully commented this answer
+        '400':
+          description: invalid url
+        '401':
+          description: 'Unauthorized!, please provide a valid token.'
+        '403':
+          description: Action forbidden! you cannot comment this answer
+        '404':
+          description: >-
+            This answer does not exist for this question ,This question does not
+            exist.
+definitions:
+  UserSignUp:
+    type: object
+    required:
+      - firstName
+      - lastName
+      - email
+      - password
+      - confrimpassword
+    properties:
+      firstName:
+        type: string
+        uniqueItems: false
+      lastName:
+        type: string
+        uniqueItems: false
+      email:
+        type: string
+        uniqueItems: true
+      password:
+        type: string
+        uniqueItems: true
+      confirmPassword:
+        type: string
+        uniqueItems: true
+  UserLogin:
+    type: object
+    required:
+      - email
+      - password
+    properties:
+      email:
+        type: string
+        uniqueItems: true
+      password:
+        type: string
+        uniqueItems: true
+  QuestionFoundModel:
+    type: object
+    required:
+      - questionTitle
+      - questionDescription
+    properties:
+      questionTitle:
+        type: string
+        uniqueItems: true
+      questionDescription:
+        type: string
+        uniqueItems: true
+      numberOfAnswer:
+        type: string
+        uniqueItems: true
+      time:
+        type: string
+        uniqueItems: true
+      date:
+        type: string
+        uniqueItems: true
+  AnswerFoundModel:
+    type: object
+    required:
+      - answer
+    properties:
+      answer:
+        type: string
+        uniqueItems: true
+      comments:
+        type: string
+        uniqueItems: true
+      time:
+        type: string
+        uniqueItems: true
+      date:
+        type: string
+        uniqueItems: true
+  PostQuestionModel:
+    type: object
+    properties:
+      questionTitle:
+        type: string
+      questionDescription:
+        type: string
+  AllQuestionFoundModel:
+    type: object
+    required:
+      - message
+    properties:
+      message:
+        type: string
+      questions:
+        type: array
+        properties:
+          id:
+            type: integer
+          questionTitle:
+            type: string
+          questionDescription:
+            type: string
+          userId:
+            type: integer
+  SearchQuestionModel:
+    type: object
+    required:
+      - message
+    properties:
+      message:
+        type: string
+      questions:
+        type: array
+        properties:
+         id:
+          type: integer
+         questionTitle:
+          type: string
+        questionDescription:
+          type: string
+        userId:
+          type: integer
+  PostAnswerModel:
+    type: object
+    properties:
+      answer:
+        type: string
+  PostCommentModel:
+    type: object
+    properties:
+      comment:
+        type: string
